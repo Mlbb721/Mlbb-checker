@@ -417,6 +417,9 @@ footer{
   padding-bottom:10px;
 }
 </style>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 </head>
 <body>
 
@@ -555,6 +558,10 @@ footer{
 const API = 'https://api.isan.eu.org/nickname/ml';
 
 const $ = id => document.getElementById(id);
+
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
 // ── Main lookup ──────────────────────────────────────────
 async function lookupPlayer() {
