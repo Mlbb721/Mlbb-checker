@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MLBB Player ID orqali nikneym va akkaunt ma'lumotlarini tekshiring">
+<title>MLBB Player Info – ID Tekshirish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#06040f;
+  --s1:#110926;
+  --s2:#1c1140;
+  --gold:#c8912a;
+  --glow:rgba(200,145,42,.18);
+  --cyan:#30c5e0;
+  --text:#ede8f0;
+  --sub:#8878a0;
+  --err:#e05555;
+  --border:rgba(200,145,42,.22);
+  --rad:12px;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── Ambient glow ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -5%,rgba(200,145,42,.10) 0%,transparent 70%),
+    radial-gradient(ellipse 55% 35% at 85% 105%,rgba(48,197,224,.07) 0%,transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Hex grid ── */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='70'%3E%3Cpolygon points='30,2 57,17 57,53 30,68 3,53 3,17' fill='none' stroke='rgba(200%2C145%2C42%2C0.07)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size:60px 70px;
+  pointer-events:none;z-index:0;
+}
+
+/* ── TG PROMO BANNER ── */
+.ad-bar{
+  width:100%;
+  background:rgba(17,9,38,.92);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  padding:10px 16px;
+  position:relative;z-index:10;
+}
+.ad-bar-bottom{
+  border-top:1px solid var(--border);
+  border-bottom:none;
+  margin-top:0;
+}
+
+/* Promo banner card */
+.promo-card{
+  width:100%;max-width:728px;
+  background:linear-gradient(120deg,#12063a 0%,#1a0d40 50%,#0e1a3a 100%);
+  border:1px solid rgba(200,145,42,.28);
+  border-radius:12px;
+  padding:14px 18px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 30px rgba(200,145,42,.10);
+}
+/* shimmer sweep */
+.promo-card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.04) 50%,transparent 65%);
+  animation:shimmer 3.5s ease infinite;
+  pointer-events:none;
+}
+@keyframes shimmer{
+  0%{transform:translateX(-100%)}
+  60%,100%{transform:translateX(120%)}
+}
+
+/* MLBB logo */
+.promo-logo{
+  flex-shrink:0;
+  width:52px;height:52px;
+  background:linear-gradient(135deg,#c8912a,#f0c060);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:13px;color:#06040f;letter-spacing:.04em;
+  text-align:center;line-height:1.15;
+  box-shadow:0 0 18px rgba(200,145,42,.4);
+  position:relative;z-index:1;
+}
+
+/* Text block */
+.promo-text{
+  flex:1;min-width:0;
+  position:relative;z-index:1;
+}
+.promo-tag{
+  font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--gold);margin-bottom:3px;
+  display:flex;align-items:center;gap:5px;
+}
+.promo-tag::before{
+  content:'';display:inline-block;
+  width:14px;height:1px;background:var(--gold);
+}
+.promo-title{
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:clamp(14px,3.5vw,18px);
+  color:var(--text);line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.promo-sub{
+  font-size:12px;color:var(--sub);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* CTA button */
+.promo-btn{
+  flex-shrink:0;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 18px;
+  background:linear-gradient(135deg,#0088cc,#00aaff);
+  border:none;border-radius:9px;
+  color:#fff;font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:14px;letter-spacing:.05em;
+  text-decoration:none;cursor:pointer;
+  transition:opacity .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 0 16px rgba(0,136,204,.35);
+  white-space:nowrap;
+  position:relative;z-index:1;
+}
+.promo-btn:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,136,204,.5);}
+.promo-btn:active{transform:translateY(0);}
+.promo-btn svg{width:16px;height:16px;flex-shrink:0;}
+
+@media(max-width:480px){
+  .promo-card{padding:12px 14px;gap:10px;}
+  .promo-logo{width:44px;height:44px;font-size:11px;}
+  .promo-btn{padding:9px 13px;font-size:13px;}
+  .promo-btn span.btn-txt{display:none;}
+}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 20px 0;
+  max-width:720px;margin:0 auto;
+  position:relative;z-index:2;
+}
+.logo{
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:20px;letter-spacing:.05em;
+  display:flex;align-items:center;gap:7px;
+}
+.logo-ml{
+  background:linear-gradient(135deg,#c8912a,#f0c060);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.logo-dot{color:var(--sub);font-weight:300;}
+.logo-info{color:var(--text);font-weight:400;}
+.hdr-tag{
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--sub);border:1px solid var(--border);border-radius:99px;
+  padding:3px 10px;
+}
+
+/* ── WRAP ── */
+.wrap{
+  position:relative;z-index:1;
+  max-width:720px;margin:0 auto;
+  padding:0 16px 0;
+}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:44px 0 30px;}
+.eyebrow{
+  font-size:11px;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--gold);margin-bottom:12px;
+}
+.hero h1{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(28px,7vw,50px);font-weight:700;
+  line-height:1.08;letter-spacing:.02em;margin-bottom:10px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(90deg,#c8912a 0%,#f0c060 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{color:var(--sub);font-size:14px;margin-bottom:30px;}
+
+/* ── SEARCH CARD ── */
+.search-card{
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--rad);padding:24px;
+  box-shadow:0 0 50px var(--glow);
+}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+@media(max-width:480px){.fields{grid-template-columns:1fr}}
+
+label{
+  display:block;font-size:11px;text-transform:uppercase;
+  letter-spacing:.10em;color:var(--sub);margin-bottom:5px;
+}
+input[type="text"],input[type="number"]{
+  width:100%;background:var(--s2);
+  border:1px solid rgba(200,145,42,.18);border-radius:8px;
+  padding:11px 14px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:15px;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  -moz-appearance:textfield;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--glow);}
+input::placeholder{color:#403060;}
+
+.btn{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,#a87020,#c8912a,#dda030);
+  border:none;border-radius:8px;
+  color:#07050e;
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:17px;letter-spacing:.08em;
+  cursor:pointer;transition:opacity .2s,transform .15s;
+  position:relative;overflow:hidden;
+}
+.btn:hover{opacity:.9;transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.btn-shine{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 20%,rgba(255,255,255,.18) 50%,transparent 80%);
+  transform:translateX(-100%);transition:transform .5s;
+}
+.btn:hover .btn-shine{transform:translateX(100%);}
+
+.error-box{
+  margin-top:12px;padding:10px 14px;
+  background:rgba(224,85,85,.09);
+  border:1px solid rgba(224,85,85,.28);
+  border-radius:8px;color:#f08888;font-size:13px;
+  display:none;
+}
+.error-box.show{display:block;}
+
+/* ── LOADING ── */
+.loading-wrap{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;padding:40px 0;
+}
+.loading-wrap.show{display:flex;}
+.spinner{
+  width:42px;height:42px;
+  border:3px solid rgba(200,145,42,.15);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin .75s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--sub);font-size:12px;letter-spacing:.1em;text-transform:uppercase;}
+
+/* ── RESULT CARD ── */
+.result-card{
+  display:none;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--rad);
+  overflow:hidden;
+  margin:24px 0 0;
+  box-shadow:0 0 60px var(--glow);
+  animation:slideUp .4s ease;
+  position:relative;
+}
+.result-card.show{display:block;}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* scan line reveal */
+.scan-line{
+  position:absolute;left:0;right:0;top:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),var(--cyan),transparent);
+  animation:scanDown .8s ease forwards;
+  z-index:20;pointer-events:none;
+}
+@keyframes scanDown{
+  from{top:0;opacity:1}
+  to{top:100%;opacity:0}
+}
+
+/* Player top */
+.player-top{
+  background:linear-gradient(135deg,#1a0e3c 0%,#110926 100%);
+  border-bottom:1px solid var(--border);
+  padding:24px;
+  display:flex;align-items:center;gap:20px;
+}
+@media(max-width:420px){.player-top{flex-direction:column;text-align:center;}}
+.avatar-ring{
+  width:84px;height:84px;flex-shrink:0;
+  border-radius:50%;padding:3px;
+  background:linear-gradient(135deg,#c8912a,#f0c060,#30c5e0);
+}
+.avatar-ring img{
+  width:100%;height:100%;border-radius:50%;
+  object-fit:cover;background:var(--s2);display:block;
+}
+.player-meta h2{
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:28px;letter-spacing:.02em;
+  background:linear-gradient(90deg,#f0c060,#ede8f0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:8px;
+}
+.badge-row{display:flex;flex-wrap:wrap;gap:6px;}
+@media(max-width:420px){.badge-row{justify-content:center;}}
+.badge{font-size:11px;padding:3px 10px;border-radius:99px;letter-spacing:.06em;text-transform:uppercase;}
+.b-gold{background:rgba(200,145,42,.12);border:1px solid rgba(200,145,42,.35);color:#d4a040;}
+.b-cyan{background:rgba(48,197,224,.10);border:1px solid rgba(48,197,224,.32);color:#30c5e0;}
+.b-purple{background:rgba(160,100,220,.10);border:1px solid rgba(160,100,220,.3);color:#c080f0;}
+
+/* Card sections */
+.c-section{
+  padding:20px 24px;
+  border-bottom:1px solid rgba(200,145,42,.08);
+}
+.c-section:last-child{border-bottom:none;}
+.s-title{
+  font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--sub);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.s-title::after{content:'';flex:1;height:1px;background:rgba(200,145,42,.12);}
+
+/* Stats grid */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(148px,1fr));
+  gap:10px;
+}
+.stat-item{
+  background:var(--s2);border-radius:8px;
+  padding:12px 14px;
+  border:1px solid rgba(200,145,42,.1);
+}
+.stat-k{
+  font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--sub);margin-bottom:4px;
+}
+.stat-v{
+  font-family:'Rajdhani',sans-serif;font-weight:600;
+  font-size:16px;color:var(--text);
+  word-break:break-all;
+}
+
+/* Accounts */
+.accounts-grid{display:flex;flex-wrap:wrap;gap:9px;}
+.acc-chip{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 14px;border-radius:9px;font-size:13px;border:1px solid;
+}
+.acc-on{background:rgba(48,197,224,.08);border-color:rgba(48,197,224,.3);color:#30c5e0;}
+.acc-off{background:rgba(100,80,120,.06);border-color:rgba(100,80,120,.2);color:var(--sub);}
+.acc-icon{font-size:15px;}
+
+.note-box{
+  margin-top:12px;font-size:12px;color:var(--sub);
+  padding:9px 13px;
+  background:rgba(200,145,42,.04);
+  border-left:2px solid rgba(200,145,42,.28);
+  border-radius:0 7px 7px 0;line-height:1.5;
+}
+
+/* Raw JSON */
+.raw-pre{
+  background:#050311;border-radius:8px;padding:14px;
+  font-family:'Courier New',monospace;font-size:11.5px;
+  color:#a090c0;overflow-x:auto;max-height:180px;overflow-y:auto;
+  border:1px solid rgba(200,145,42,.08);
+  white-space:pre-wrap;word-break:break-all;
+}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:22px 16px;
+  color:var(--sub);font-size:12px;
+  position:relative;z-index:1;
+  border-top:1px solid rgba(200,145,42,.07);
+  margin-top:20px;
+}
+
+/* ── AD (bottom wrap) ── */
+.bottom-wrap{
+  position:relative;z-index:1;
+  padding-bottom:10px;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TOP PROMO BANNER ══════════════ -->
+<div class="ad-bar">
+  <div class="promo-card">
+    <!-- MLBB Logo -->
+    <div class="promo-logo">MLBB</div>
+
+    <!-- Text -->
+    <div class="promo-text">
+      <div class="promo-tag">Telegram kanal</div>
+      <div class="promo-title">Eng so'ngi yangiliklar va eng arzon almazlar</div>
+      <div class="promo-sub">MLBB_721 — da hammasini birinchi bo'lib bilib oling 🔥</div>
+    </div>
+
+    <!-- CTA -->
+    <a class="promo-btn" href="https://t.me/MLBB_721" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.31 13.617l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.843.942z"/>
+      </svg>
+      <span class="btn-txt">Kanalga o'tish</span>
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header>
+  <div class="logo">
+    <span class="logo-ml">MLBB</span>
+    <span class="logo-dot">/</span>
+    <span class="logo-info">Player Info</span>
+  </div>
+  <span class="hdr-tag">2026</span>
+</header>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="wrap">
+
+  <!-- Hero + Search -->
+  <section class="hero">
+    <p class="eyebrow">Mobile Legends: Bang Bang</p>
+    <h1>O'yinchi <em>NIKNEYMINI</em><br>Tekshirish</h1>
+    <p class="hero-sub">Player ID va Server ID kiriting — Nikneym va Regionini biliboling!</p>
+
+    <div class="search-card">
+      <div class="fields">
+        <div>
+          <label for="uid">Player ID</label>
+          <input type="number" id="uid" placeholder="123456789" inputmode="numeric" />
+        </div>
+        <div>
+          <label for="zoneId">Server ID</label>
+          <input type="number" id="zoneId" placeholder="2001" inputmode="numeric" />
+        </div>
+      </div>
+      <button class="btn" id="searchBtn" onclick="lookupPlayer()">
+        <span class="btn-shine"></span>
+        TEKSHIRISH
+      </button>
+      <div class="error-box" id="errorBox"></div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div class="loading-wrap" id="loadingWrap">
+    <div class="spinner"></div>
+    <span class="loading-text">Ma'lumot olinmoqda…</span>
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="resultCard">
+    <div class="scan-line" id="scanLine" style="display:none;"></div>
+
+    <!-- Player header -->
+    <div class="player-top">
+      <div class="avatar-ring">
+        <img id="rAvatar" src="" alt="avatar"
+          onerror="this.src='https://api.dicebear.com/7.x/bottts-neutral/svg?seed=mlbb&backgroundColor=1c1040'" />
+      </div>
+      <div class="player-meta">
+        <h2 id="rName">—</h2>
+        <div class="badge-row" id="rBadges"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="c-section">
+      <div class="s-title">Asosiy ma'lumotlar</div>
+      <div class="stats-grid" id="rStats"></div>
+    </div>
+
+    <!-- Connected accounts -->
+    <div class="c-section">
+      <div class="s-title">Ulangan hisoblar</div>
+      <div class="accounts-grid" id="rAccounts"></div>
+      <div class="note-box" id="rNote" style="display:none;"></div>
+    </div>
+    
+  </div>
+
+</div><!-- .wrap -->
+
+<!-- ══════════════ BOTTOM PROMO BANNER ══════════════ -->
+<div class="bottom-wrap">
+  <div class="ad-bar ad-bar-bottom">
+    <div class="promo-card">
+      <div class="promo-logo">MLBB</div>
+      <div class="promo-text">
+        <div class="promo-tag">Telegram kanal</div>
+        <div class="promo-title">Eng so'ngi yangiliklar va eng arzon almazlar</div>
+        <div class="promo-sub">MLBB_721 — da hammasini birinchi bo'lib bilib oling 🔥</div>
+      </div>
+      <a class="promo-btn" href="https://t.me/MLBB_721" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.31 13.617l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.843.942z"/>
+        </svg>
+        <span class="btn-txt">Kanalga o'tish</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 MLBB Player Info &nbsp;·&nbsp; By SoLo's
+</footer>
+
+<script>
+// ╔══════════════════════════════════════════════════════╗
+// ║  CONFIG — kerak bo'lsa shu yerni o'zgartiring        ║
+// ╠══════════════════════════════════════════════════════╣
+// ║  Agar o'z Vercel proxy'ingiz bo'lsa:                 ║
+// ║  const BASE_URL = 'https://your-proxy.vercel.app/api/check'; ║
+// ║  va fetchPlayer funksiyasini shunga moslashtiring    ║
+// ╚══════════════════════════════════════════════════════╝
+const API = 'https://api.isan.eu.org/nickname/ml';
+
+const $ = id => document.getElementById(id);
+
+// ── Main lookup ──────────────────────────────────────────
+async function lookupPlayer() {
+  const uid    = $('uid').value.trim();
+  const zoneId = $('zoneId').value.trim();
+
+  if (!uid || !zoneId) { showErr('Player ID va Server ID ikkisi ham kiritilishi shart.'); return; }
+  if (!/^\d+$/.test(uid) || !/^\d+$/.test(zoneId)) { showErr('Faqat raqam kiriting.'); return; }
+
+  setLoading(true);
+  clearErr();
+  hideResult();
+
+  try {
+    const url = `https://api.isan.eu.org/nickname/ml?id=${encodeURIComponent(uid)}&zone=${encodeURIComponent(zoneId)}`;
+
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error(`Server xatosi: HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const raw = JSON.stringify(data);
+
+    if (!data || (!data.name && !data.nickname && !data.username)) {
+        throw new Error("O'yinchi topilmadi. Player ID va Server ID ni tekshiring.");
+    }
+
+    render(data, uid, zoneId, raw);
+
+} catch (err) {
+    showErr(err.message || "Noma'lum xato. Qayta urinib ko'ring.");
+} finally {
+    setLoading(false);
+}
+}
+
+// ── Render result ────────────────────────────────────────
+function render(p, uid, zoneId, rawText) {
+  // Avatar
+  const avatar = p.head || p.headimg || p.avatar || p.head_image || '';
+  $('rAvatar').src = avatar
+    || `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${uid}&backgroundColor=1c1040`;
+
+  // Name
+  $('rName').textContent = p.name || p.nickname || p.user_name || '—';
+
+  // Badges
+  const br = $('rBadges');
+  br.innerHTML = '';
+  const exp = p.exp || p.level || p.grade;
+  if (exp) addBadge(br, `Lv ${exp}`, 'b-gold');
+  addBadge(br, `Server ${zoneId}`, 'b-cyan');
+  if (p.region || p.server_name) addBadge(br, p.region || p.server_name, 'b-purple');
+  if (p.is_vip) addBadge(br, 'VIP', 'b-gold');
+
+  // Stats grid — skip avatar/name fields, objects/arrays
+  const statsEl  = $('rStats');
+  statsEl.innerHTML = '';
+  const SKIP = new Set(['head','headimg','avatar','head_image','name','nickname','user_name']);
+  const LABELS = {
+    uid:'Player ID', zoneId:'Server ID', user_id:'Player ID',
+    exp:'Tajriba', level:'Daraja', grade:'Daraja',
+    region:'Mintaqa', server_name:'Server',
+    lifeTime:'O\'yin vaqti', like:'Like soni',
+    winRate:'G\'alaba %', mvpCount:'MVP', mvp_count:'MVP',
+    follow:'Obunachilar', fans_count:'Fanlar',
+    heroCount:'Qahramonlar', badge_count:'Nishonlar',
+  };
+  addStat(statsEl, 'Player ID', uid);
+  addStat(statsEl, 'Server ID', zoneId);
+  for (const [k, v] of Object.entries(p)) {
+    if (SKIP.has(k)) continue;
+    if (v === null || v === undefined || v === '' || typeof v === 'object') continue;
+    addStat(statsEl, LABELS[k] || k, v);
+  }
+
+  // Connected accounts
+  const accEl  = $('rAccounts');
+  const noteEl = $('rNote');
+  accEl.innerHTML = '';
+  noteEl.style.display = 'none';
+
+  const PLATFORMS = [
+    { keys:['google','google_bind','bind_google'],        icon:'🟢', label:'Google'    },
+    { keys:['facebook','facebook_bind','bind_facebook'],  icon:'🔵', label:'Facebook'  },
+    { keys:['vk','vk_bind'],                             icon:'🔷', label:'VK'         },
+    { keys:['twitter','twitter_bind'],                   icon:'🐦', label:'Twitter'    },
+    { keys:['apple','apple_bind'],                       icon:'🍎', label:'Apple ID'   },
+    { keys:['moonton','moonton_bind'],                   icon:'⚔️',  label:'Moonton ID' },
+    { keys:['huawei','huawei_bind'],                     icon:'📱', label:'Huawei ID'  },
+  ];
+
+  let foundBinding = false;
+  for (const pl of PLATFORMS) {
+    let val = undefined;
+    for (const k of pl.keys) { if (p[k] !== undefined) { val = p[k]; break; } }
+    if (val !== undefined) {
+      foundBinding = true;
+      addAccChip(accEl, pl.icon, pl.label, !!val && val !== '0' && val !== 'false');
+    }
+  }
+
+  if (!foundBinding) {
+    noteEl.style.display = 'block';
+    noteEl.textContent =
+      '⚠️  Google, Facebook va boshqa ulangan hisoblar ma\'lumoti Moonton\'ning ommaviy '
+    + 'APIda mavjud emas. Bu ma\'lumotni ko\'rish uchun foydalanuvchi tizimga kirishi kerak.';
+  }
+
+    // Show card with scan animation
+  const card = $('resultCard');
+  const line = $('scanLine');
+  card.classList.add('show');
+  line.style.display = 'block';
+  setTimeout(() => { line.style.display = 'none'; }, 900);
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── DOM helpers ──────────────────────────────────────────
+function addBadge(el, txt, cls) {
+  const s = document.createElement('span');
+  s.className = `badge ${cls}`;
+  s.textContent = txt;
+  el.appendChild(s);
+}
+function addStat(el, key, val) {
+  const d = document.createElement('div');
+  d.className = 'stat-item';
+  d.innerHTML = `<div class="stat-k">${esc(key)}</div><div class="stat-v">${esc(String(val))}</div>`;
+  el.appendChild(d);
+}
+function addAccChip(el, icon, label, linked) {
+  const d = document.createElement('div');
+  d.className = `acc-chip ${linked ? 'acc-on' : 'acc-off'}`;
+  d.innerHTML = `
+    <span class="acc-icon">${icon}</span>
+    <span>${label}</span>
+    <span style="font-size:11px;margin-left:2px;">${linked ? '✓ Ulangan' : '– Ulanmagan'}</span>`;
+  el.appendChild(d);
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── State helpers ────────────────────────────────────────
+function setLoading(on) {
+  $('loadingWrap').classList.toggle('show', on);
+  $('searchBtn').disabled = on;
+}
+function showErr(msg) { const b=$('errorBox'); b.textContent=msg; b.classList.add('show'); }
+function clearErr()   { $('errorBox').classList.remove('show'); }
+function hideResult() { $('resultCard').classList.remove('show'); }
+
+function safeParseJson(str) {
+  try { return JSON.parse(str); } catch { return null; }
+}
+
+// Enter key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') lookupPlayer();
+});
+</script>
+</body>
+</html>
